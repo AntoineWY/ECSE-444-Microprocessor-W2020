@@ -22,7 +22,7 @@ Main_loop
     
     vdiv.f32 s0, s0, R3 // divide sum with Depth
     vStr.f32 s0, [r1, R5, lsl#2]
-    vMOV s0, #0 // clear the current avg for a new calculation
+    vsub.f32 s0, s0, s0 // clear the current avg for a new calculation
 
 
     add r5,r5,#1
@@ -42,6 +42,7 @@ is_depth_odd //based on whether the depth is odd, adjust the higher bound
     subeq R10, #1 // now we have the upper bound 
     bx lr
 
+//--------------------------------------------------------------------------------------
 Add_loop
 
     cmp r9,#0
@@ -53,7 +54,7 @@ Add_loop
     vldr.f32 s0, [R0, R9, lsl #2] 
     vadd.f32 s0, s0, s1
    
-    after_add
+after_add
     add r9, r9, #1
     cmp r9, r10
     bLE Add_loop

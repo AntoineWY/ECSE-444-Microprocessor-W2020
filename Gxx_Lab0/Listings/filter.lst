@@ -1,0 +1,189 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             text, CODE, READONLY
+    2 00000000                 export           ma_Filter_asm
+    3 00000000         
+    4 00000000         ma_Filter_asm
+    5 00000000 E92D 1FF0       push{R4-R12}
+    6 00000004 F04F 0400       mov              R4, #0      ; loop counter 
+    7 00000008 F04F 0500       mov              R5, #0      ; filer average arr
+                                                            ay index
+    8 0000000C         
+    9 0000000C EE30 0A40       vsub.f32         s0, s0      ; a buffer for sum 
+                                                            to calculate averag
+                                                            e
+   10 00000010         
+   11 00000010         
+   12 00000010         Main_loop
+   13 00000010 EA4F 07A3       asr              R7, R3, #2  ; divide depth by 2
+                                                            , integer division!
+                                                            
+   14 00000014 EBA5 0807       sub              R8, R5, R7
+   15 00000018 F000 F819       bl               is_depth_odd
+   16 0000001C         ; lower bound in R8, higher in R10
+   17 0000001C         
+   18 0000001C         
+   19 0000001C 46C1            mov              R9, R8      ; R9 will be counte
+                                                            r of add_loop, star
+                                                            ting at the lower b
+                                                            ound
+   20 0000001E F000 F822       bl               Add_loop
+   21 00000022         
+   22 00000022 EE01 3A90       vmov.f32         s3, r3
+   23 00000026 EE80 0A21       vdiv.f32         s0, s0, s3  ; divide sum with D
+                                                            epth
+   24 0000002A F84D AD04       push{r10}
+   25 0000002E 468A            mov              r10, r1
+   26 00000030 EB0A 0A85       add              r10,r10, r5, lsl#2
+   27 00000034 ED8A 0A00       vstr.f32         s0, [r10]
+   28 00000038 F85D AB04       pop{r10}
+   29 0000003C EE30 0A40       vsub.f32         s0, s0, s0  ; clear the current
+                                                             avg for a new calc
+                                                            ulation
+   30 00000040         
+   31 00000040         
+   32 00000040 F105 0501       add              r5,r5,#1
+   33 00000044 4295            CMP              R5, R2
+   34 00000046 DBE3            BLT              Main_loop
+   35 00000048         
+   36 00000048 E8BD 1FF0       pop{R4-r12}
+   37 0000004C 4770            bx               lr
+   38 0000004E         
+   39 0000004E         
+   40 0000004E         
+   41 0000004E         is_depth_odd                         ;based on whether t
+                                                            he depth is odd, ad
+                                                            just the higher bou
+                                                            nd
+   42 0000004E EB07 0A05       add              R10, R7, R5
+   43 00000052 F04F 0901       mov              R9, #0x00000001
+   44 00000056 EA09 0903       and              R9, R9, R3  ;is R3, the depth o
+                                                            dd or even?
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   45 0000005A F1B9 0F00       cmp              R9, #0
+   46 0000005E BF08 F1AA 
+              0A01             subeq            R10, #1     ; now we have the u
+                                                            pper bound 
+   47 00000064 4770            bx               lr
+   48 00000066         
+   49 00000066         ;-------------------------------------------------------
+                       -------------------------------
+   50 00000066         Add_loop
+   51 00000066         
+   52 00000066 F1B9 0F00       cmp              r9,#0
+   53 0000006A DB0C            BLT              after_add   ;is the index is sm
+                                                            aller than 0, jump 
+                                                            the add(equals to a
+                                                            dd zero)
+   54 0000006C         
+   55 0000006C 4591            cmp              r9, r2      ; compare with leng
+                                                            th, the highest ind
+                                                            ex of the array
+   56 0000006E DA0A            BGE              after_add
+   57 00000070         
+   58 00000070 F84D AD04       push{r10}
+   59 00000074 4682            mov              r10, r0
+   60 00000076 EB0A 0A89       add              r10,r10, r9, lsl#2
+   61 0000007A ED9A 0A00       vldr.f32         s0, [r10]
+   62 0000007E F85D AB04       pop{r10}
+   63 00000082 EE30 0A20       vadd.f32         s0, s0, s1
+   64 00000086         
+   65 00000086         after_add
+   66 00000086 F109 0901       add              r9, r9, #1
+   67 0000008A 45D1            cmp              r9, r10
+   68 0000008C DDEB            BLE              Add_loop
+   69 0000008E 4770            bx               LR
+   70 00000090         
+   71 00000090         END
+   72 00000090         
+   73 00000090         
+                       
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\filter_1.d -o.\objects\filter_1.o -I.\RTE\_Gxx_Lab
+0 -I"C:\Users\Yinuo A Wang\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\I
+nclude" -I"C:\Users\Yinuo A Wang\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\
+DSP\Include" -I"C:\Users\Yinuo A Wang\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\D
+evice\ARM\ARMCM4\Include" --predefine="__EVAL SETA 1" --predefine="__UVISION_VE
+RSION SETA 529" --predefine="_RTE_ SETA 1" --predefine="ARMCM4_FP SETA 1" --lis
+t=.\listings\filter.lst asm\filter.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+Add_loop 00000066
+
+Symbol: Add_loop
+   Definitions
+      At line 50 in file asm\filter.s
+   Uses
+      At line 20 in file asm\filter.s
+      At line 68 in file asm\filter.s
+
+END 00000090
+
+Symbol: END
+   Definitions
+      At line 71 in file asm\filter.s
+   Uses
+      None
+Comment: END unused
+Main_loop 00000010
+
+Symbol: Main_loop
+   Definitions
+      At line 12 in file asm\filter.s
+   Uses
+      At line 34 in file asm\filter.s
+Comment: Main_loop used once
+after_add 00000086
+
+Symbol: after_add
+   Definitions
+      At line 65 in file asm\filter.s
+   Uses
+      At line 53 in file asm\filter.s
+      At line 56 in file asm\filter.s
+
+is_depth_odd 0000004E
+
+Symbol: is_depth_odd
+   Definitions
+      At line 41 in file asm\filter.s
+   Uses
+      At line 15 in file asm\filter.s
+Comment: is_depth_odd used once
+ma_Filter_asm 00000000
+
+Symbol: ma_Filter_asm
+   Definitions
+      At line 4 in file asm\filter.s
+   Uses
+      At line 2 in file asm\filter.s
+Comment: ma_Filter_asm used once
+text 00000000
+
+Symbol: text
+   Definitions
+      At line 1 in file asm\filter.s
+   Uses
+      None
+Comment: text unused
+7 symbols
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+342 symbols in table
