@@ -1,6 +1,6 @@
 
 /*
- * Auto generated Run-Time-Environment Component Configuration File
+ * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
  * Project: 'GXX_Lab1' 
@@ -16,7 +16,9 @@
  */
 #define CMSIS_device_header "ARMCM4_FP.h"
 
+/*  Keil.ARM Compiler::Compiler:I/O:STDOUT:ITM:1.2.0 */
 #define RTE_Compiler_IO_STDOUT          /* Compiler I/O: STDOUT */
           #define RTE_Compiler_IO_STDOUT_ITM      /* Compiler I/O: STDOUT ITM */
+
 
 #endif /* RTE_COMPONENTS_H */

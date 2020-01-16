@@ -1,0 +1,96 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             test, CODE, READONLY
+    2 00000000         
+    3 00000000                 export           asm_arrayProduct
+    4 00000000         
+    5 00000000         asm_arrayProduct
+    6 00000000 E92D 1FF0       push             {r4-r12}
+    7 00000004 EBA4 0404       sub              r4, r4, r4  ;set r4 =0 ,r4 is t
+                                                            he counter and the 
+                                                            index
+    8 00000008 EE30 0A40       vsub.f32         s0,s0,s0    ;s0 will hold the f
+                                                            loat product
+    9 0000000C         
+   10 0000000C         
+   11 0000000C 4605            mov              r5, r0      ;r5 hold the addres
+                                                            s of the first arra
+                                                            y
+   12 0000000E 460E            mov              r6, r1      ; r6 address of the
+                                                             second array
+   13 00000010 461F            mov              r7, r3      ; r7 address of the
+                                                             result array
+   14 00000012         product_loop
+   15 00000012         
+   16 00000012         
+   17 00000012 EDD5 0A00       vldr.f32         s1,[r5]
+   18 00000016 F105 0504       add              r5, r5, #4
+   19 0000001A         
+   20 0000001A ED96 1A00       vldr.f32         s2,[r6]
+   21 0000001E F106 0604       add              r6, r6, #4
+   22 00000022         
+   23 00000022 EE20 0A81       vmul.f32         s0, s1, s2
+   24 00000026 ED87 0A00       vstr.f32         s0, [r7]
+   25 0000002A F107 0704       add              r7, r7, #4
+   26 0000002E         
+   27 0000002E 1E52            subs             r2, r2, #1
+   28 00000030 DCEF            bgt              product_loop
+   29 00000032         
+   30 00000032         Done
+   31 00000032 E8BD 1FF0       pop{r4-r12}
+   32 00000036 4770            bx               lr
+   33 00000038         
+   34 00000038         
+   35 00000038                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\arrayprod.d -o.\objects\arrayprod.o -I.\RTE\_GXX_L
+ab1 -I"C:\Users\Yinuo A Wang\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core
+\Include" -I"C:\Users\Yinuo A Wang\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSI
+S\DSP\Include" -I"C:\Users\Yinuo A Wang\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0
+\Device\ARM\ARMCM4\Include" --predefine="__EVAL SETA 1" --predefine="__UVISION_
+VERSION SETA 529" --predefine="_RTE_ SETA 1" --predefine="ARMCM4_FP SETA 1" --l
+ist=.\listings\arrayprod.lst asm\arrayProd.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+Done 00000032
+
+Symbol: Done
+   Definitions
+      At line 30 in file asm\arrayProd.s
+   Uses
+      None
+Comment: Done unused
+asm_arrayProduct 00000000
+
+Symbol: asm_arrayProduct
+   Definitions
+      At line 5 in file asm\arrayProd.s
+   Uses
+      At line 3 in file asm\arrayProd.s
+Comment: asm_arrayProduct used once
+product_loop 00000012
+
+Symbol: product_loop
+   Definitions
+      At line 14 in file asm\arrayProd.s
+   Uses
+      At line 28 in file asm\arrayProd.s
+Comment: product_loop used once
+test 00000000
+
+Symbol: test
+   Definitions
+      At line 1 in file asm\arrayProd.s
+   Uses
+      None
+Comment: test unused
+4 symbols
+339 symbols in table
