@@ -64,11 +64,11 @@ int main() {
 	
 	
 	
-	stdev_c(f1_array, 1,&stdev);
+	stdev_c(f1000_array, 1000,&stdev);
 	printf("%f c \n ", stdev);
-	stdev_s(f1_array, 1,&stdev_asm);
+	stdev_s(f1000_array, 1000,&stdev_asm);
 	printf("%f asm \n ", stdev_asm);
-	arm_std_f32(f1_array, 1,&stdev_dps);
+	arm_std_f32(f1000_array, 1000,&stdev_dps);
 	printf("%f dps \n ", stdev_dps);
 	
 	

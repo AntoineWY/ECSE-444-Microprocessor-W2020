@@ -9,6 +9,7 @@ stdev_s
 		vsub.f32 s1,s1,s1
 		vsub.f32 s2,s2,s2
 		vmov.f32 s2, r1
+		VCVT.F32.U32 S2,s2	
 		
 		mov r4,r0
 		mov r5,r1
@@ -44,6 +45,8 @@ stdev_loop
 
 		sub r1, r1, #1 ; n-1
 		vmov.f32 s1, r1 ; intermediate step loading the integer into float reg
+		VCVT.F32.U32 S1, S1
+		
 		vdiv.f32 s2, s2, s1 ; variance/(n-1)
 		vsqrt.f32 s0, s2; square root(variance/(n-1))
 		vstr.f32 s0, [r2]
